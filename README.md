@@ -1,5 +1,3 @@
-# NeoCortex-Historcal-Journel-
-Happy 1 Year with zero fucking sleep
 # NeoCortexV3 Engineering Journal
 
 ## Historical Migration Entry
@@ -364,6 +362,490 @@ Broker
 
 ---
 
+# Historical Model Performance Development
+
+One of the most important changes between the earlier NeoCortex versions and the V3 design was the increasing use of historical behavior as an active decision input.
+
+The historical model does not simply ask whether a market setup exists.
+
+It attempts to determine whether the current setup resembles previous setups that produced favorable outcomes.
+
+The historical model evaluates combinations of:
+
+- Market regime
+- Time of day
+- Session
+- Liquidity conditions
+- Direction of approach
+- Sweep depth
+- Rejection strength
+- Reclaim behavior
+- Previous reactions at the same level
+- Volatility
+- Momentum
+- Volume behavior
+- Trend alignment
+- Macro conditions
+- Model confidence
+- Risk conditions
+- Historical success of comparable setups
+
+This allows NeoCortex to reject lower-quality trades rather than treating every valid technical setup equally.
+
+---
+
+# Observed Historical Trade Accuracy
+
+During historical-model development and strategy evaluation, the system has shown periods where selected trade setups produced win rates above 60%.
+
+This performance should be treated as an **observed research and testing result**, not as a guaranteed future performance level.
+
+A trade may only receive elevated historical confidence when:
+
+```text
+Current Market State
+        ↓
+Historical Pattern Match
+        ↓
+Comparable Setups Found
+        ↓
+Historical Success Rate
+        ↓
+Confidence Threshold
+        ↓
+Risk Validation
+        ↓
+Trade Eligible
+```
+
+For example:
+
+```text
+Comparable historical setups: 184
+Winning outcomes: 119
+Losing outcomes: 65
+
+Historical win rate:
+119 / 184 = 64.7%
+```
+
+A setup with this type of historical profile can receive greater confidence than a setup with limited evidence or poor historical performance.
+
+---
+
+# Trade Filtering and the 60% Threshold
+
+The historical system is not intended to trade every detected signal.
+
+A major reason the model can maintain stronger results is selective execution.
+
+NeoCortex can reject signals when:
+
+- Historical win rate is below the required threshold
+- Sample size is insufficient
+- Current regime differs significantly from historical examples
+- Expert models strongly disagree
+- Market volatility is abnormal
+- Liquidity conditions are poor
+- Expected reward does not justify risk
+- Portfolio exposure is already elevated
+- Confidence calibration indicates excessive uncertainty
+
+Conceptually:
+
+```text
+Technical Setup Detected
+          ↓
+Historical Match
+          ↓
+Historical Win Rate
+          ↓
+      < Threshold
+       /       \
+     YES       NO
+      ↓         ↓
+   REJECT    Continue
+                ↓
+          Expert Consensus
+                ↓
+            Risk Gate
+                ↓
+             Execute
+```
+
+This is fundamentally different from simply increasing prediction accuracy.
+
+NeoCortex improves trade quality by reducing the number of weak trades that reach execution.
+
+---
+
+# Historical Confidence Scoring
+
+Historical performance can contribute to a composite confidence score.
+
+An example model could use:
+
+```text
+Historical Pattern Match       25%
+Market Structure               20%
+Liquidity                      15%
+Regime Compatibility           15%
+Momentum                       10%
+Volatility                     5%
+Macro / Sentiment              5%
+Expert Agreement               5%
+```
+
+Example:
+
+```text
+Historical similarity:     0.89
+Historical win rate:       0.64
+Market structure:          0.82
+Liquidity confidence:      0.78
+Regime match:              0.91
+Momentum alignment:        0.74
+Expert agreement:          0.81
+```
+
+The combined result can become an execution confidence score.
+
+The exact production weighting should remain calibrated through testing rather than being permanently hard-coded.
+
+---
+
+# Sample-Size Protection
+
+NeoCortex should never treat a high historical win rate from a small number of observations as equally reliable to a large sample.
+
+For example:
+
+```text
+6 wins / 8 trades
+= 75%
+
+500 wins / 760 trades
+= 65.8%
+```
+
+Although 75% appears numerically higher, the larger second dataset provides substantially stronger evidence.
+
+V3 therefore emphasizes:
+
+- Minimum historical sample sizes
+- Confidence intervals
+- Regime-specific statistics
+- Out-of-sample validation
+- Walk-forward testing
+- Paper-trading confirmation
+
+---
+
+# Expectancy Versus Win Rate
+
+The historical model does not evaluate performance using win rate alone.
+
+A profitable system can have a lower win rate if winning trades are substantially larger than losing trades.
+
+NeoCortex therefore evaluates:
+
+```text
+Expectancy =
+(Probability of Win × Average Win)
+-
+(Probability of Loss × Average Loss)
+```
+
+Example:
+
+```text
+Win rate:        62%
+Average winner:  +2.0R
+Average loser:   -1.0R
+
+Expectancy:
+(0.62 × 2.0R) - (0.38 × 1.0R)
+
+= +0.86R per trade
+```
+
+This means the historical system can distinguish between:
+
+- High win-rate but poor reward/risk strategies
+- Lower win-rate but high-expectancy strategies
+- High win-rate and high-expectancy setups
+
+---
+
+# Regime-Specific Accuracy
+
+V3 is designed to avoid treating a strategy's overall win rate as universally valid.
+
+The same strategy may behave differently across market regimes.
+
+Example:
+
+```text
+Trending Market
+Win Rate: 68%
+
+Range Market
+Win Rate: 61%
+
+High-Volatility Market
+Win Rate: 54%
+
+Low-Liquidity Market
+Win Rate: 47%
+```
+
+In this case NeoCortex could:
+
+- Prefer execution during trending conditions
+- Reduce position size in range conditions
+- Reject trades during high-volatility conditions
+- Disable the setup during low-liquidity conditions
+
+This makes the historical system conditional rather than static.
+
+---
+
+# Historical Pattern Weighting
+
+Older observations do not necessarily receive the same weight as recent observations.
+
+V3 can weight data based on:
+
+- Recency
+- Regime similarity
+- Instrument similarity
+- Volatility similarity
+- Session similarity
+- Liquidity similarity
+- Model version
+- Market structure similarity
+
+A historical trade that closely resembles current conditions can therefore contribute more than a trade from a very different environment.
+
+---
+
+# Level Interaction Memory
+
+The historical model becomes significantly stronger when combined with the V3 Level-State engine.
+
+For each major level, NeoCortex can remember:
+
+```text
+Level: 5,820.25
+
+Interactions: 14
+
+Previous sweeps: 6
+Successful reclaims: 5
+Failed reclaims: 1
+
+Average rejection:
+18.4 points
+
+Bullish continuation after reclaim:
+71%
+
+Average time near level:
+7.8 minutes
+
+Strongest session:
+New York AM
+```
+
+When price returns to the same area, NeoCortex is no longer evaluating the level as completely new.
+
+It can compare the current interaction against the stored history.
+
+---
+
+# Active Trade Learning
+
+V3 extends historical learning beyond backtests.
+
+Each completed trade can feed sanitized outcome data back into persistent memory.
+
+Example:
+
+```text
+Trade Setup
+     ↓
+Prediction
+     ↓
+Execution
+     ↓
+Outcome
+     ↓
+Post-Trade Analysis
+     ↓
+Historical Memory
+     ↓
+Future Pattern Matching
+```
+
+Stored fields can include:
+
+- Setup ID
+- Strategy version
+- Model version
+- Entry regime
+- Entry confidence
+- Risk level
+- Expected outcome
+- Actual outcome
+- Maximum favorable excursion
+- Maximum adverse excursion
+- Exit reason
+- Reward-to-risk achieved
+
+This creates an increasingly rich dataset for future validation.
+
+---
+
+# Winning Trade Reinforcement
+
+When a trade behaves as predicted, NeoCortex can strengthen the historical relevance of the associated pattern.
+
+It does not simply memorize:
+
+```text
+"This setup won."
+```
+
+Instead it records why the setup may have worked.
+
+For example:
+
+```text
+Liquidity sweep
++
+Strong reclaim
++
+NY session
++
+Bullish higher timeframe structure
++
+Increasing volume
++
+Low opposing liquidity
+=
+Successful continuation
+```
+
+Future setups with similar characteristics can then receive stronger historical support.
+
+---
+
+# Losing Trade Analysis
+
+Losing trades are equally important.
+
+For unsuccessful trades, NeoCortex can analyze:
+
+- Whether the historical match was weak
+- Whether the regime changed
+- Whether volatility increased unexpectedly
+- Whether opposing liquidity was underestimated
+- Whether confidence was miscalibrated
+- Whether the stop was too tight
+- Whether execution latency affected the result
+- Whether the model overfit previous observations
+
+This allows a losing trade to improve future decision quality rather than simply being counted as a failure.
+
+---
+
+# Continuous Performance Monitoring
+
+A critical V3 requirement is monitoring whether historical accuracy remains stable.
+
+Metrics should include:
+
+- Rolling win rate
+- Rolling expectancy
+- Profit factor
+- Maximum drawdown
+- Sharpe ratio
+- Average R multiple
+- Calibration error
+- Regime-specific accuracy
+- Strategy-specific accuracy
+- Model-specific accuracy
+- Confidence-bucket accuracy
+
+Example:
+
+```text
+Last 50 trades:   66%
+Last 100 trades:  64%
+Last 250 trades:  62%
+Lifetime:         63%
+
+Current target:
+>60%
+```
+
+If rolling performance falls below the acceptable level, NeoCortex can reduce exposure, disable the strategy, or return the model to shadow mode.
+
+---
+
+# Model Promotion Requirements
+
+A model should not be promoted to active execution simply because it briefly exceeds a 60% win rate.
+
+V3 model promotion should consider:
+
+- Minimum trade count
+- Out-of-sample performance
+- Walk-forward results
+- Paper-trading results
+- Expectancy
+- Maximum drawdown
+- Profit factor
+- Confidence calibration
+- Stability across regimes
+- Performance degradation
+- Execution costs
+- Slippage
+- Statistical uncertainty
+
+Example promotion rule:
+
+```text
+Win Rate              >= 60%
+Minimum Trades        >= 200
+Positive Expectancy   Required
+Profit Factor         > 1.5
+Maximum Drawdown      Within Risk Limit
+Paper Validation      Passed
+Calibration           Passed
+Risk Review           Passed
+```
+
+These numbers should be considered example thresholds until validated against the actual NeoCortex dataset.
+
+---
+
+# No Performance Guarantee
+
+Historical performance is evidence, not a guarantee.
+
+The system should explicitly avoid assuming:
+
+```text
+Past win rate = future win rate
+```
+
+Market structure, liquidity, volatility, macroeconomic conditions, and participant behavior can change.
+
+NeoCortexV3 therefore continuously compares current performance against historical expectations and can automatically downgrade models whose edge appears to deteriorate.
+
+---
+
 # Security Boundaries
 
 V2 further separated cybersecurity responsibilities from trading intelligence.
@@ -400,43 +882,7 @@ Intended purposes included:
 - Security testing
 - Failure isolation
 
-Raspberry Pi systems were considered for isolated HellPot nodes.
-
 HellPot was specifically intended to remain isolated from sensitive trading infrastructure.
-
----
-
-# V2 Development-to-Production Workflow
-
-V2 also introduced clearer distinctions between:
-
-- Experimental research
-- Pre-alpha
-- Alpha
-- Beta
-- Production
-
-Experimental components could be evaluated without automatically becoming production trading systems.
-
-This became especially important for quantum research.
-
----
-
-# V2 Readiness Findings
-
-Code reviews during V2 development showed that substantial functionality existed, but not every system was fully production-ready.
-
-Areas identified for further work included:
-
-- Complete authentication enforcement
-- End-to-end authorization checks
-- Production-quality encrypted data handling
-- Broader integration testing
-- Full system-level risk testing
-- Deployment hardening
-- Production failover validation
-
-Several narrow trading/risk tests worked correctly, but full production readiness required additional integration work.
 
 ---
 
@@ -454,824 +900,144 @@ V3 is designed to maintain historical market interaction state instead of treati
 
 ---
 
-# Persistent Market Intelligence
+# Historical Intelligence as a Core V3 Component
 
-V3 introduced persistent state and interaction history.
+The historical model is now intended to operate as one of the primary intelligence layers of NeoCortexV3.
 
-Instead of only observing a price level at the current moment, NeoCortex can retain the history of how the market interacted with that level.
+Its role is not simply to predict direction.
 
-Examples include:
-
-- Approach direction
-- Number of interactions
-- Sweep depth
-- Rejection distance
-- Time spent near the level
-- Closes above
-- Closes below
-- Reclaims
-- Failures
-- Session
-- Time of day
-- Previous reactions
-- Subsequent market behavior
-
-This allows NeoCortex to build contextual memory around important market structures.
-
----
-
-# Level-State Engine
-
-V3 introduced the Level State / Interaction History concept.
-
-Tracked market levels can include:
-
-- Asia high
-- Asia low
-- Major supply zones
-- Major demand zones
-- Q25
-- Q50
-- Q75
-- Equilibrium
-- Session highs
-- Session lows
-- Previous-day structures
-- Liquidity pools
-
-Each level can accumulate a behavioral history.
-
----
-
-# Market-State Memory
-
-V3 is intended to retain historical relationships such as:
+Its purpose is to answer:
 
 ```text
-Level
-  ↓
-Approach
-  ↓
-Sweep
-  ↓
-Rejection
-  ↓
-Reclaim
-  ↓
-Continuation
-  ↓
-Historical Outcome
+Have we seen something like this before?
+
+How many times?
+
+Under what conditions?
+
+How often did it work?
+
+How much did winning trades make?
+
+How much did losing trades lose?
+
+Is the current market truly comparable?
+
+Does this pattern still have an edge?
 ```
 
-Future interactions with that level can therefore be evaluated against prior behavior.
+This moves NeoCortex toward evidence-weighted decision making.
 
 ---
 
-# Data Growth
+# V3 Historical Decision Flow
 
-V3 significantly increased the amount of information retained from market observations.
-
-A prior development comparison estimated approximately:
+The expanded decision process becomes:
 
 ```text
-Input data:
-~28 MB
-
-Learned / structured data:
-~7.7 GB
-```
-
-This represented roughly a 280× expansion in retained and derived information.
-
-The increase reflects the transition from transient processing toward persistent learned state.
-
----
-
-# Data Provenance
-
-V3 introduced stronger data-provenance requirements.
-
-Data records are intended to maintain metadata identifying:
-
-- Source
-- Time received
-- Processing pipeline
-- Transformation history
-- Model consumption
-- Data classification
-- Storage status
-- Derived outputs
-
-This improves reproducibility and auditability.
-
----
-
-# Data Quality Validation
-
-V3 expanded data-quality validation.
-
-The system can evaluate factors such as:
-
-- Missing values
-- Stale data
-- Corrupted records
-- Out-of-order events
-- Duplicate records
-- Provider disagreement
-- Inconsistent timestamps
-
-Poor-quality data can be rejected before being consumed by trading intelligence.
-
----
-
-# Replay / Digital Twin
-
-V3 introduced the concept of replaying historical states.
-
-The replay system allows NeoCortex to recreate previous market environments using stored events.
-
-Potential uses include:
-
-- Strategy debugging
-- Risk analysis
-- Incident reconstruction
-- Model comparison
-- Regression testing
-- Market-state replay
-- Digital-twin simulation
-
-This provides a controlled environment for analyzing how NeoCortex would behave under past conditions.
-
----
-
-# Dissent and Quorum
-
-V3 expanded the MoE architecture by introducing explicit expert disagreement handling.
-
-Instead of requiring all models to agree, NeoCortex can track:
-
-- Expert votes
-- Confidence
-- Disagreement
-- Consensus
-- Minority opinions
-
-A quorum system can determine whether enough reliable experts support an action.
-
----
-
-# Confidence Calibration
-
-V3 introduced greater emphasis on calibrated confidence.
-
-A model predicting:
-
-```text
-Bullish — 80%
-```
-
-should historically be correct approximately 80% of the time under comparable conditions.
-
-Calibration helps prevent models from producing misleadingly high confidence.
-
----
-
-# Shadow Models
-
-V3 added the concept of shadow models.
-
-A shadow model can:
-
-- Receive production data
-- Generate predictions
-- Be evaluated against production models
-- Remain unable to execute trades
-
-This allows new models to be validated in realistic conditions before being promoted.
-
----
-
-# Exposure Governor
-
-The V3 risk architecture expanded into a global exposure governor.
-
-The governor can consider:
-
-- Total portfolio exposure
-- Correlated positions
-- Sector concentration
-- Volatility
-- Drawdown
-- Leverage
-- Market regime
-- Model confidence
-- Liquidity
-- Existing open positions
-
-Individual models cannot override the exposure governor.
-
----
-
-# Kill Switch
-
-V3 added stronger emergency-stop requirements.
-
-A kill switch is intended to halt execution under conditions such as:
-
-- Extreme drawdown
-- Broken market-data feeds
-- Invalid pricing
-- Authentication failures
-- Broker errors
-- Severe model disagreement
-- Security incidents
-- Infrastructure instability
-- Risk-engine failure
-
----
-
-# Degraded Mode
-
-Rather than requiring the entire platform to stop whenever one component fails, V3 introduced degraded operating modes.
-
-Examples:
-
-```text
-Quantum unavailable
-→ continue classical operation
-
-News feed unavailable
-→ disable news expert
-
-GPU node unavailable
-→ reroute model
-
-Broker unavailable
-→ stop execution but continue analysis
-
-Risk engine unavailable
-→ execution disabled
-```
-
-This is a major improvement in fault tolerance.
-
----
-
-# Distributed Compute Architecture
-
-V3 moves NeoCortex away from a single-machine or single-container architecture.
-
-The system is designed around heterogeneous compute nodes.
-
-Possible nodes include:
-
-- CPU servers
-- GPU servers
-- Dedicated storage
-- Raspberry Pi nodes
-- Security nodes
-- Training nodes
-- Inference nodes
-- Database nodes
-
----
-
-# Distributed Rack Architecture
-
-The planned V3 deployment structure includes:
-
-```text
-Network
-   ↓
-Storage Layer
-   ↓
-Compute Layer
-   ↓
-Kubernetes
-   ↓
-NeoCortex Services
-   ↓
-Security / HellPot Isolation
-   ↓
-Edge Protection
-```
-
-This structure allows different services to scale independently.
-
----
-
-# Kubernetes
-
-Kubernetes becomes increasingly important in V3.
-
-It can provide:
-
-- Service orchestration
-- Horizontal scaling
-- Node scheduling
-- Health checks
-- Automatic restarts
-- Service isolation
-- Deployment management
-- GPU workload scheduling
-
----
-
-# Persistent Storage
-
-V3 requires persistent storage for significantly more than traditional application data.
-
-Storage categories include:
-
-- Market-state history
-- Level interaction history
-- Model metadata
-- Model training history
-- Feature stores
-- Backtest data
-- Replay data
-- Audit records
-- Security telemetry
-- Derived analytics
-
----
-
-# Expanded Ingestion
-
-V3 expands beyond conventional market data.
-
-Potential inputs include:
-
-### Market Data
-
-- Equities
-- Futures
-- Options
-- Forex
-- Crypto
-- Fixed income
-
-### Macroeconomic Data
-
-- Interest rates
-- Inflation
-- Employment
-- Economic releases
-- Bond yields
-
-### Commodity Data
-
-- Oil
-- Natural gas
-- Metals
-- Agricultural markets
-
-### Alternative Data
-
-- Shipping
-- Supply chain activity
-- Geopolitical developments
-- News
-- Sentiment
-- Political events
-
-These inputs can contribute to probabilistic market predictions.
-
----
-
-# Prediction Framework
-
-V3 expands predictions beyond single directional outputs.
-
-Potential classifications include:
-
-```text
-Bullish
-Bearish
-Sideways
-```
-
-Each prediction can include a probability or confidence score.
-
-The system can combine:
-
-- Technical data
-- Liquidity
-- Market structure
-- Macro conditions
-- News
-- Sentiment
-- Volatility
-- Quantum-derived features
-- Historical state
-
----
-
-# Probabilistic Risk Engine
-
-V3 moves toward probabilistic risk assessment.
-
-Instead of only asking:
-
-```text
-Is this trade allowed?
-```
-
-the system can also estimate:
-
-```text
-Probability of favorable outcome
-Probability of adverse movement
-Expected drawdown
-Liquidity risk
-Regime risk
-Model disagreement
-Portfolio correlation
-```
-
-The deterministic risk gate still retains final authority.
-
----
-
-# Autonomous and Semi-Autonomous Modes
-
-V3 introduced clearer operating modes.
-
-### Manual
-
-NeoCortex provides intelligence but does not execute automatically.
-
-### Semi-Autonomous
-
-NeoCortex may prepare or recommend actions while requiring human approval for selected operations.
-
-### Autonomous
-
-NeoCortex may execute permitted actions within predefined risk and authorization boundaries.
-
-Autonomous operation remains subordinate to:
-
-- Risk limits
-- Exposure governor
-- Security policies
-- Kill switch
-- Broker controls
-
----
-
-# Database Hardening
-
-V3 includes increased focus on database security and reliability.
-
-Areas include:
-
-- Access controls
-- Encryption
-- Data separation
-- Backup
-- Recovery
-- Audit logging
-- Integrity validation
-- Replication
-- Persistent model state
-
----
-
-# Security Architecture
-
-Security expanded from application protection into an architectural layer.
-
-V3 security concepts include:
-
-- Zero-trust service communication
-- Network segmentation
-- Isolated security nodes
-- Secret management
-- Strong authentication
-- Encrypted transport
-- Encrypted credentials
-- Audit trails
-- Infrastructure monitoring
-- Edge security
-- HellPot isolation
-- Service-level access policies
-
----
-
-# Edge Security
-
-Edge security concepts considered for V3 include external protection layers such as:
-
-- Cloudflare
-- Aikido
-- Web application filtering
-- Rate limiting
-- TLS enforcement
-- Bot protection
-- Network monitoring
-
----
-
-# Monitoring and Observability
-
-V3 expands observability across the entire platform.
-
-Monitoring areas include:
-
-- APIs
-- Databases
-- GPU nodes
-- CPU nodes
-- Kubernetes
-- Storage
-- Models
-- Trading execution
-- Brokers
-- Data pipelines
-- Security systems
-
-Prometheus and Grafana remain part of the broader monitoring strategy.
-
----
-
-# User Interface Evolution
-
-V3 significantly expanded the UI concept.
-
-Rather than a simple trading dashboard, planned interfaces include:
-
-- Main Dashboard
-- Liquidity Radar
-- End User Console
-- Market-state visualization
-- Probabilistic predictions
-- Model confidence
-- Macro data
-- Micro data
-- Security state
-- System health
-- Risk status
-- 3D visualizations
-- GeoSentinel-style geographic intelligence
-
-The visual direction moved toward a dark cyberpunk interface.
-
----
-
-# Development Philosophy Change
-
-The architectural philosophy evolved significantly across the versions.
-
-## V1
-
-```text
-Observe
-↓
-Predict
-↓
-Trade
-```
-
-## V2
-
-```text
-Observe
-↓
-Multiple Models
-↓
-Hybrid Research
-↓
-Risk Gate
-↓
-Trade
-```
-
-## V3
-
-```text
-Observe
-↓
-Validate
-↓
-Remember
-↓
-Compare With History
-↓
-Route To Experts
-↓
-Expert Dissent / Quorum
-↓
-Hybrid Intelligence
-↓
-Confidence Calibration
-↓
-Portfolio Risk Governor
-↓
-Deterministic Risk Gate
-↓
-Execution
-↓
-Record Outcome
-↓
-Learn From Interaction
+LIVE MARKET
+     ↓
+DATA VALIDATION
+     ↓
+CURRENT MARKET STATE
+     ↓
+HISTORICAL SEARCH
+     ↓
+SIMILARITY SCORING
+     ↓
+HISTORICAL OUTCOMES
+     ↓
+REGIME FILTER
+     ↓
+EXPECTANCY ANALYSIS
+     ↓
+MoE EXPERT REVIEW
+     ↓
+DISSENT / QUORUM
+     ↓
+CONFIDENCE CALIBRATION
+     ↓
+GLOBAL EXPOSURE GOVERNOR
+     ↓
+DETERMINISTIC RISK GATE
+     ↓
+EXECUTION
+     ↓
+OUTCOME
+     ↓
+HISTORICAL MEMORY UPDATE
 ```
 
 ---
 
-# Major V1 → V2 Changes
+# Performance Goal
 
-The major changes introduced between V1 and V2 included:
+The historical intelligence system is intended to maintain high-quality selective execution rather than maximize the number of trades.
 
-- Hybrid quantum/classical research
-- PennyLane feature encoding
-- Qiskit optimization research
-- PyTorch hybrid signaling
-- Classical-first risk authority
-- Runtime-safe fallbacks
-- Expanded automation
-- MoE architecture direction
-- LAM orchestration direction
-- Stronger security boundaries
-- HellPot security concept
-- Improved credential protection
-- Improved production/research separation
-- More sophisticated model orchestration
-
----
-
-# Major V2 → V3 Changes
-
-The major changes introduced between V2 and V3 include:
-
-- Persistent market memory
-- Level-State engine
-- Interaction History
-- Data provenance
-- Data quality validation
-- Historical replay
-- Digital-twin concepts
-- Expert dissent
-- Quorum logic
-- Confidence calibration
-- Shadow models
-- Exposure governor
-- Global risk controls
-- Kill-switch architecture
-- Degraded operating modes
-- Distributed compute
-- Heterogeneous compute nodes
-- GPU clusters
-- Persistent storage architecture
-- Kubernetes expansion
-- Expanded ingest sources
-- Macro intelligence
-- Alternative data
-- Probabilistic predictions
-- Probabilistic risk
-- Semi-autonomous mode
-- Autonomous mode
-- Stronger database security
-- Expanded observability
-- Advanced UI visualization
-
----
-
-# Current NeoCortexV3 Architecture
-
-The current architectural direction can be summarized as:
+A target such as:
 
 ```text
-                    DATA SOURCES
-                         │
-                         ▼
-                INGESTION / VALIDATION
-                         │
-                         ▼
-                  DATA PROVENANCE
-                         │
-                         ▼
-                   FEATURE ENGINE
-                         │
-           ┌─────────────┴──────────────┐
-           │                            │
-           ▼                            ▼
-    HISTORICAL STATE                LIVE STATE
-           │                            │
-           └─────────────┬──────────────┘
-                         ▼
-                 LEVEL-STATE ENGINE
-                         │
-                         ▼
-                     MoE ROUTER
-                         │
-       ┌─────────────────┼─────────────────┐
-       ▼                 ▼                 ▼
- Liquidity Expert   Macro Expert     AI/ML Experts
-       │                 │                 │
-       └─────────────────┼─────────────────┘
-                         ▼
-                EXPERT CONSENSUS
-                         │
-                  DISSENT / QUORUM
-                         │
-                         ▼
-                  LAM CONTROLLER
-                         │
-                         ▼
-              PROBABILISTIC ANALYSIS
-                         │
-                         ▼
-                 EXPOSURE GOVERNOR
-                         │
-                         ▼
-             DETERMINISTIC RISK GATE
-                         │
-              ┌──────────┴──────────┐
-              │                     │
-           REJECT                APPROVE
-                                    │
-                                    ▼
-                              BROKER LAYER
-                                    │
-                                    ▼
-                                EXECUTION
-                                    │
-                                    ▼
-                            OUTCOME JOURNAL
-                                    │
-                                    ▼
-                            PERSISTENT MEMORY
+Validated Win Rate: >60%
 ```
 
+can be used as an operational quality threshold where testing supports it.
+
+However, NeoCortex should prioritize:
+
+```text
+Positive expectancy
++
+Controlled drawdown
++
+Stable calibration
++
+Adequate sample size
++
+Consistent regime performance
+```
+
+over win rate alone.
+
 ---
 
-# Security / Contract Considerations
+# Core Principle
 
-NeoCortexV3 development records must avoid storing:
+The major historical-model improvement introduced through V2 and expanded in V3 can be summarized as:
 
-- API keys
-- Authentication tokens
-- Brokerage credentials
-- Account numbers
-- Customer PII
-- Raw contract-restricted vendor data
-- Restricted datasets
-- Confidential third-party source code
-- NDA-protected information
-
-Engineering journals should retain architectural, operational, and derived metadata without reproducing protected source data.
-
----
-
-# Result
-
-NeoCortex has evolved from a centralized AI-assisted trading platform into a distributed intelligent market-analysis architecture.
-
-The primary generational distinction is:
-
-**V1 built the platform.**
-
-**V2 expanded the intelligence.**
-
-**V3 gives the intelligence persistent memory, distributed infrastructure, expert collaboration, stronger risk governance, and greater operational resilience.**
+> **NeoCortex does not only predict what the market may do. It compares the present market to what has happened before, determines how reliable that historical evidence is, filters out weak setups, measures actual outcomes, and continuously updates its understanding of which conditions produce profitable trades.**
 
 ---
 
 # Decision
 
-**Status:** ACCEPTED — V3 ARCHITECTURAL BASELINE
+**Status:** ACCEPTED — HISTORICAL MODEL EXPANSION
 
-NeoCortexV3 will continue development using V2 as the technical foundation while progressively replacing centralized and stateless components with persistent, distributed, policy-controlled systems.
+Historical state, pattern matching, outcome tracking, confidence calibration, and performance degradation monitoring are considered core components of NeoCortexV3.
+
+Any claim of sustained performance above 60% must be tied to validated backtest, walk-forward, paper-trading, or live-trading data with an adequate sample size.
 
 ---
 
 # Follow-Up Work
 
-- Finalize V3 service boundaries.
-- Implement Level-State persistence.
-- Implement Interaction History schema.
-- Standardize model IDs and versions.
-- Implement data provenance.
-- Implement replay engine.
-- Implement expert registry.
-- Implement MoE router.
-- Implement dissent/quorum logic.
-- Implement confidence calibration.
-- Implement shadow-model framework.
-- Implement global exposure governor.
-- Implement centralized deterministic risk gate.
-- Implement degraded-mode policies.
-- Implement kill-switch architecture.
-- Harden database layer.
-- Expand ingestion framework.
-- Integrate macro and alternative data.
-- Expand probabilistic prediction engine.
-- Build distributed training architecture.
-- Deploy Kubernetes service architecture.
-- Expand GPU compute support.
-- Isolate HellPot infrastructure.
-- Implement security telemetry.
-- Implement contract-aware journaling.
-- Add automated secret scanning.
-- Expand dashboards and system visualization.
-- Establish formal V3 Alpha readiness requirements.
+- Store historical setup IDs.
+- Track win rate by setup.
+- Track expectancy by setup.
+- Track performance by regime.
+- Track performance by session.
+- Track performance by instrument.
+- Add minimum sample-size requirements.
+- Add rolling win-rate monitoring.
+- Add confidence intervals.
+- Add confidence calibration.
+- Add model-decay detection.
+- Add automatic shadow-mode fallback.
+- Add historical similarity scoring.
+- Add post-trade outcome analysis.
+- Record maximum favorable excursion.
+- Record maximum adverse excursion.
+- Track entry and exit quality.
+- Compare predicted probability against actual outcome.
+- Add strategy-level performance dashboards.
+- Add historical-model health monitoring.
+- Require validation before documenting sustained >60% performance as production performance.
